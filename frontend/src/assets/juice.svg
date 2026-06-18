@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+  <rect rx="12" width="80" height="80" fill="#fffbe6" />
+  <rect x="28" y="24" width="24" height="28" rx="4" fill="#f97316" />
+  <rect x="32" y="18" width="16" height="6" rx="3" fill="#fde68a" />
+  <text x="40" y="64" font-size="8" text-anchor="middle" fill="#111">Juice</text>
+</svg>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="80" viewBox="0 0 120 80">
+  <rect rx="12" width="120" height="80" fill="#fff7f0" />
+  <circle cx="60" cy="38" r="16" fill="#fca5a5" />
+  <rect x="54" y="54" width="12" height="6" rx="3" fill="#7c2d12" />
+  <text x="60" y="72" font-size="9" text-anchor="middle" fill="#111">Dessert</text>
+</svg>

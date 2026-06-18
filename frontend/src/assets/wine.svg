@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+  <rect rx="12" width="80" height="80" fill="#fff1f2" />
+  <path d="M40 20 C48 28, 48 44, 40 52 C32 44, 32 28, 40 20 Z" fill="#7f1d1d" />
+  <rect x="38" y="52" width="4" height="12" fill="#374151" />
+  <text x="40" y="70" font-size="8" text-anchor="middle" fill="#111">Wine</text>
+</svg>
