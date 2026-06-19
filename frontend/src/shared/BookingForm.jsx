@@ -13,6 +13,7 @@ export default function BookingForm({ type = 'Booking' }) {
   });
   const [status, setStatus] = useState(null);
   const [showPayment, setShowPayment] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const isVenue = type.includes('Venue') || type.includes('Events');
 
@@ -27,13 +28,36 @@ export default function BookingForm({ type = 'Booking' }) {
     setShowPayment(true);
   }
 
-  function handlePaymentComplete(method) {
-    setStatus(`✓ Payment received via ${method === 'momo' ? 'Momo' : 'Credit Card'}. Booking confirmed!`);
-    setTimeout(() => {
-      setValues({ name: '', email: '', phone: '', date: '', endDate: '', guests: '1', message: '' });
-      setStatus(null);
-      setShowPayment(false);
-    }, 3000);
+  async function handlePaymentComplete(method) {
+    setSaving(true);
+
+    try {
+      const response = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...values,
+          bookingType: type,
+          paymentMethod: method,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorBody = await response.json().catch(() => null);
+        throw new Error(errorBody?.message || 'Unable to save booking.');
+      }
+
+      setStatus(`✓ Payment received via ${method === 'momo' ? 'Momo' : 'Credit Card'}. Booking confirmed!`);
+      setTimeout(() => {
+        setValues({ name: '', email: '', phone: '', date: '', endDate: '', guests: '1', message: '' });
+        setStatus(null);
+        setShowPayment(false);
+      }, 3000);
+    } finally {
+      setSaving(false);
+    }
   }
 
   if (showPayment) {
@@ -42,6 +66,7 @@ export default function BookingForm({ type = 'Booking' }) {
         bookingDetails={values}
         onPaymentComplete={handlePaymentComplete}
         onBack={() => setShowPayment(false)}
+        saving={saving}
       />
     );
   }

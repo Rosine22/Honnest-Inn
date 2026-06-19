@@ -1,9 +1,10 @@
 import React, { useMemo, useState } from 'react';
 
-export default function PaymentForm({ bookingDetails, onPaymentComplete, onBack }) {
+export default function PaymentForm({ bookingDetails, onPaymentComplete, onBack, saving = false }) {
   const [paymentMethod, setPaymentMethod] = useState(null);
   const [cardDetails, setCardDetails] = useState({ cardNumber: '', expiry: '', cvc: '' });
   const [paymentStatus, setPaymentStatus] = useState(null);
+  const [error, setError] = useState(null);
 
   const momoPayment = useMemo(() => {
     const momoNumbers = ['+256 701 234 567', '+256 772 845 190', '+256 785 901 246'];
@@ -25,14 +26,26 @@ export default function PaymentForm({ bookingDetails, onPaymentComplete, onBack 
   const handleCardPayment = (e) => {
     e.preventDefault();
     if (cardDetails.cardNumber && cardDetails.expiry && cardDetails.cvc) {
-      setPaymentStatus('success');
-      setTimeout(() => onPaymentComplete('card'), 2000);
+      setError(null);
+      setPaymentStatus('processing');
+      Promise.resolve(onPaymentComplete('card'))
+        .then(() => setPaymentStatus('success'))
+        .catch((bookingError) => {
+          setPaymentStatus(null);
+          setError(bookingError.message || 'Unable to save booking.');
+        });
     }
   };
 
   const handleMomoPayment = () => {
-    setPaymentStatus('success');
-    setTimeout(() => onPaymentComplete('momo'), 2000);
+    setError(null);
+    setPaymentStatus('processing');
+    Promise.resolve(onPaymentComplete('momo'))
+      .then(() => setPaymentStatus('success'))
+      .catch((bookingError) => {
+        setPaymentStatus(null);
+        setError(bookingError.message || 'Unable to save booking.');
+      });
   };
 
   return (
@@ -98,8 +111,8 @@ export default function PaymentForm({ bookingDetails, onPaymentComplete, onBack 
                   <p><strong>Payment Code:</strong> {momoPayment.code}</p>
                   <p><strong>Amount:</strong> £{bookingDetails.totalAmount || '250'}</p>
                 </div>
-                <button type="button" className="btn primary payment-btn" onClick={handleMomoPayment}>
-                  I Have Paid
+                  <button type="button" className="btn primary payment-btn" onClick={handleMomoPayment} disabled={saving || paymentStatus === 'processing'}>
+                    {paymentStatus === 'processing' ? 'Saving booking...' : 'I Have Paid'}
                 </button>
               </div>
             )}
@@ -155,13 +168,23 @@ export default function PaymentForm({ bookingDetails, onPaymentComplete, onBack 
                 <h3>Payment Successful!</h3>
                 <p>Your booking has been confirmed.</p>
               </div>
+            ) : paymentStatus === 'processing' ? (
+              <div className="payment-success">
+                <p>Saving booking details...</p>
+              </div>
             ) : (
-              <button type="submit" className="btn primary payment-btn">
-                Pay £{bookingDetails.totalAmount || '250'}
+              <button type="submit" className="btn primary payment-btn" disabled={saving}>
+                {saving ? 'Saving booking...' : `Pay £${bookingDetails.totalAmount || '250'}`}
               </button>
             )}
           </form>
         ) : null}
+
+        {error && (
+          <p role="alert" style={{ color: '#ef4444', textAlign: 'center' }}>
+            {error}
+          </p>
+        )}
 
         {!paymentStatus && paymentMethod && (
           <button type="button" className="btn outline back-btn" onClick={() => setPaymentMethod(null)}>

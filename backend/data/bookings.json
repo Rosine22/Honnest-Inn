@@ -1,0 +1,17 @@
+[
+  {
+    "id": "63075e9b-0113-4fff-bb53-d3dbfd86cd73",
+    "name": "Test Guest",
+    "email": "test@example.com",
+    "phone": "123456",
+    "date": "2026-06-20T14:00",
+    "endDate": "2026-06-22T10:00",
+    "guests": "2",
+    "message": "Late arrival",
+    "bookingType": "Rooms & Lodges",
+    "paymentMethod": "card",
+    "totalAmount": "250",
+    "status": "confirmed",
+    "createdAt": "2026-06-19T01:11:36.668Z"
+  }
+]
